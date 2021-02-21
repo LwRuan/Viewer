@@ -1,4 +1,4 @@
-# Viewer
+# VkViewer
 
 A viewer for learning Vulkan. 
 
