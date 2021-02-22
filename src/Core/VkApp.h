@@ -7,6 +7,7 @@
 #include <vector>
 #include <stdexcept>
 #include <cstdlib>
+#include <optional>
 
 class VkApp
 {
@@ -14,6 +15,20 @@ public:
     void run();
 
 private:
+    /************************struct*******************************/
+    /*************************************************************/
+
+    struct QueueFamilyIndices {
+        std::optional<uint32_t> graphicsFamily;
+
+        bool isComplete() {
+            return graphicsFamily.has_value();
+        }
+    };
+
+    /************************function*****************************/
+    /*************************************************************/
+
     void initWindow();
     void initVulkan();
     void mainLoop();
@@ -22,15 +37,18 @@ private:
     void createInstance();
     void setupDebugMessenger();
     static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, 
-    const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, 
-    const VkAllocationCallbacks* pAllocator, 
-    VkDebugUtilsMessengerEXT* pDebugMessenger);
+        const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, 
+        const VkAllocationCallbacks* pAllocator, 
+        VkDebugUtilsMessengerEXT* pDebugMessenger);
     static void DestroyDebugUtilsMessengerEXT(VkInstance instance, 
-    VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+        VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
     void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
-    
     bool checkValidationLayerSupport();
     std::vector<const char*> getRequiredExtensions();
+
+    void pickPhysicalDevice();
+    bool isDeviceSuitable(VkPhysicalDevice device);
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -38,6 +56,8 @@ private:
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
     void* pUserData);
 
+    /************************variable*****************************/
+    /*************************************************************/
     //glfw window
     const uint32_t WIDTH = 800;
     const uint32_t HEIGHT = 600;
@@ -56,4 +76,5 @@ private:
     std::vector<VkExtensionProperties> _extensions;
 
     VkInstance _instance;
+    VkPhysicalDevice _physicalDevice;
 };
