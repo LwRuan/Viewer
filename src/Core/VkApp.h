@@ -19,10 +19,12 @@ private:
     /*************************************************************/
 
     struct QueueFamilyIndices {
+        //could be different queue family index
         std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentFamily;
 
         bool isComplete() {
-            return graphicsFamily.has_value();
+            return graphicsFamily.has_value() && presentFamily.has_value();
         }
     };
 
@@ -35,6 +37,7 @@ private:
     void cleanUp();
 
     void createInstance();
+    void createSurface();
     void setupDebugMessenger();
     static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, 
         const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, 
@@ -78,7 +81,9 @@ private:
     std::vector<VkExtensionProperties> _extensions;
 
     VkInstance _instance;
+    VkSurfaceKHR _surface;
     VkPhysicalDevice _physicalDevice;
     VkDevice _device;
     VkQueue _graphicsQueue;
+    VkQueue _presentQueue;
 };
