@@ -20,12 +20,40 @@ private:
     void cleanUp();
 
     void createInstance();
-    void showExtensions();
+    void setupDebugMessenger();
+    static VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, 
+    const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, 
+    const VkAllocationCallbacks* pAllocator, 
+    VkDebugUtilsMessengerEXT* pDebugMessenger);
+    static void DestroyDebugUtilsMessengerEXT(VkInstance instance, 
+    VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+    void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
+    
+    bool checkValidationLayerSupport();
+    std::vector<const char*> getRequiredExtensions();
 
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT messageType,
+    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+    void* pUserData);
+
+    //glfw window
     const uint32_t WIDTH = 800;
     const uint32_t HEIGHT = 600;
     GLFWwindow* _window;
 
-    VkInstance _instance;
+    //debug
+    const std::vector<const char*> _validationLayers = {
+        "VK_LAYER_KHRONOS_validation"
+    };
+    #ifdef NDEBUG
+        const bool enableValidationLayers = false;
+    #else
+        const bool enableValidationLayers = true;
+    #endif
+    VkDebugUtilsMessengerEXT _debugMessenger;
     std::vector<VkExtensionProperties> _extensions;
+
+    VkInstance _instance;
 };
