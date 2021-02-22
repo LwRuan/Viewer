@@ -11,7 +11,12 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(Vulkan REQUIRED)
 
 
-add_executable(${BIN_NAME} main.cpp)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/Core)
+include_directories(${PROJECT_SOURCE_DIR}/src/Core)
+
+add_executable(${BIN_NAME} src/main.cpp)
+target_link_libraries(${BIN_NAME} Core)
+
 target_link_libraries(${BIN_NAME} Eigen3::Eigen)
 target_link_libraries(${BIN_NAME} glfw)
 target_link_libraries(${BIN_NAME} Vulkan::Vulkan)
