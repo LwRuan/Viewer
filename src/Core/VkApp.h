@@ -50,6 +50,8 @@ private:
     bool isDeviceSuitable(VkPhysicalDevice device);
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
 
+    void createLogicalDevice();
+
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -77,4 +79,6 @@ private:
 
     VkInstance _instance;
     VkPhysicalDevice _physicalDevice;
+    VkDevice _device;
+    VkQueue _graphicsQueue;
 };
