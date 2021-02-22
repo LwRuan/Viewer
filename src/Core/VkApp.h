@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <vector>
 #include <stdexcept>
 #include <cstdlib>
 
@@ -18,7 +19,13 @@ private:
     void mainLoop();
     void cleanUp();
 
+    void createInstance();
+    void showExtensions();
+
     const uint32_t WIDTH = 800;
     const uint32_t HEIGHT = 600;
     GLFWwindow* _window;
+
+    VkInstance _instance;
+    std::vector<VkExtensionProperties> _extensions;
 };
