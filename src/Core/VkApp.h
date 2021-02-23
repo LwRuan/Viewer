@@ -28,6 +28,12 @@ private:
         }
     };
 
+    struct SwapChainSupportDetails {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+
     /************************function*****************************/
     /*************************************************************/
 
@@ -50,10 +56,16 @@ private:
     std::vector<const char*> getRequiredExtensions();
 
     void pickPhysicalDevice();
+    //can these functions be moved to another class or namespace?
     bool isDeviceSuitable(VkPhysicalDevice device);
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-
+    bool checkDeviceExtensionSupport(VkPhysicalDevice device);
     void createLogicalDevice();
+    SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+    VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+    VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+    VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+    void createSwapChain();
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -80,10 +92,19 @@ private:
     VkDebugUtilsMessengerEXT _debugMessenger;
     std::vector<VkExtensionProperties> _extensions;
 
+    const std::vector<const char*> _deviceExtensions = {
+        VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    };
+
+    std::vector<VkImage> _swapChainImages;
+    VkFormat _swapChainImageFormat;
+    VkExtent2D _swapChainExtent;
+
     VkInstance _instance;
     VkSurfaceKHR _surface;
     VkPhysicalDevice _physicalDevice;
     VkDevice _device;
     VkQueue _graphicsQueue;
     VkQueue _presentQueue;
+    VkSwapchainKHR _swapChain;
 };
