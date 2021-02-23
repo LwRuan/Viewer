@@ -73,6 +73,12 @@ private:
     void createGraphicsPipeline();
     VkShaderModule createShaderModule(const std::vector<char>& code);
     void createRenderPass();
+    void createFramebuffers();
+    void createCommandPool();
+    void createCommandBuffers();
+    void createSyncObjects();
+
+    void drawFrame();
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -110,6 +116,15 @@ private:
     VkRenderPass _renderPass;
     VkPipelineLayout _pipelineLayout;
     VkPipeline _graphicsPipeline;
+    std::vector<VkFramebuffer> _swapChainFramebuffers;
+    VkCommandPool _commandPool;
+    std::vector<VkCommandBuffer> _commandBuffers;
+    const int MAX_FRAMES_IN_FLIGHT = 2;
+    std::vector<VkSemaphore> _imageAvailableSemaphores;
+    std::vector<VkSemaphore> _renderFinishedSemaphores;
+    std::vector<VkFence> _inFlightFences;
+    std::vector<VkFence> _imagesInFlight;
+    size_t _currentFrame = 0;
 
     VkInstance _instance;
     VkSurfaceKHR _surface;
