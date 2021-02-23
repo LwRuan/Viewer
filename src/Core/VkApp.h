@@ -106,6 +106,7 @@ private:
     VkFormat _swapChainImageFormat;
     VkExtent2D _swapChainExtent;
     std::vector<VkImageView> _swapChainImageViews;
+    VkPipelineLayout _pipelineLayout;
 
     VkInstance _instance;
     VkSurfaceKHR _surface;
