@@ -4,7 +4,7 @@ find_package(Vulkan REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-add_library(Core VkApp.h VkApp.cpp)
+add_library(Core VkApp.cpp HelperFunc.cpp)
 target_link_libraries(Core Eigen3::Eigen)
 target_link_libraries(Core glfw)
 target_link_libraries(Core Vulkan::Vulkan)
