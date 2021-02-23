@@ -72,6 +72,7 @@ private:
 
     void createGraphicsPipeline();
     VkShaderModule createShaderModule(const std::vector<char>& code);
+    void createRenderPass();
 
     static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -106,7 +107,9 @@ private:
     VkFormat _swapChainImageFormat;
     VkExtent2D _swapChainExtent;
     std::vector<VkImageView> _swapChainImageViews;
+    VkRenderPass _renderPass;
     VkPipelineLayout _pipelineLayout;
+    VkPipeline _graphicsPipeline;
 
     VkInstance _instance;
     VkSurfaceKHR _surface;
