@@ -3,6 +3,7 @@
 #include <set>
 #include <cstdint>
 #include <algorithm>
+#include <string>
 
 void VkApp::run(){
     initWindow();
@@ -73,6 +74,7 @@ void VkApp::cleanUp(){
 
 
 void VkApp::createInstance(){
+    //check layer support in _validationLayers
     if (enableValidationLayers && !checkValidationLayerSupport()) {
         throw std::runtime_error("validation layers requested, but not available!");
     }
@@ -88,7 +90,7 @@ void VkApp::createInstance(){
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
-    auto extensions = getRequiredExtensions();
+    auto extensions = getRequiredExtensions();//instance extensions
     createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
     createInfo.ppEnabledExtensionNames = extensions.data();
 
@@ -207,6 +209,11 @@ void VkApp::pickPhysicalDevice(){
             break;
         }
     }
+
+    {VkPhysicalDeviceProperties properties;
+    vkGetPhysicalDeviceProperties(_physicalDevice, &properties);
+    std::cout << "choose physical device: " << properties.deviceName << std::endl;}
+
     if(_physicalDevice == VK_NULL_HANDLE){
         throw std::runtime_error("failed to find a suitable GPU!");
     }
@@ -320,7 +327,7 @@ void VkApp::createSwapChain(){
     VkSwapchainCreateInfoKHR createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
     createInfo.surface = _surface;
-    createInfo.minImageCount = imageCount;
+    createInfo.minImageCount = imageCount;//this is only the lower bound of image count, driver may create more
     createInfo.imageFormat = surfaceFormat.format;
     createInfo.imageColorSpace = surfaceFormat.colorSpace;
     createInfo.imageExtent = extent;
@@ -352,6 +359,7 @@ void VkApp::createSwapChain(){
     vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount, nullptr);
     _swapChainImages.resize(imageCount);
     vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount, _swapChainImages.data());
+    std::cout << "swap chain buffer image number: " << imageCount << std::endl;
     _swapChainImageFormat = surfaceFormat.format;
     _swapChainExtent = extent;
 }
@@ -412,7 +420,7 @@ VkSurfaceFormatKHR VkApp::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFor
 VkPresentModeKHR VkApp::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes){
     for (const auto& availablePresentMode : availablePresentModes) {
         if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
-            return availablePresentMode; //triple buffering
+            return availablePresentMode;
         }
     }
 
