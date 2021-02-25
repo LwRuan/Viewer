@@ -77,6 +77,8 @@ private:
     void createCommandPool();
     void createCommandBuffers();
     void createSyncObjects();
+    void recreateSwapChain();//resize
+    void cleanupSwapChain();
 
     void drawFrame();
 
@@ -85,6 +87,8 @@ private:
     VkDebugUtilsMessageTypeFlagsEXT messageType,
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
     void* pUserData);
+
+    static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
 
     /************************variable*****************************/
     /*************************************************************/
@@ -133,4 +137,6 @@ private:
     VkQueue _graphicsQueue;
     VkQueue _presentQueue;
     VkSwapchainKHR _swapChain;
+public:
+    bool _framebufferResized = false;
 };
