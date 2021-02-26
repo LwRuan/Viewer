@@ -66,6 +66,12 @@ private:
         }
     };
 
+    struct UniformBufferObject {
+        alignas(16) Matrix4f model;
+        alignas(16) Matrix4f view;
+        alignas(16) Matrix4f proj;
+    };
+
     /************************function*****************************/
     /*************************************************************/
 
@@ -113,7 +119,12 @@ private:
     void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
     void createVertexBuffer();
     void createIndexBuffer();
+    void createUniformBuffers();
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    void createDescriptorSetLayout();
+    void updateUniformBuffer(uint32_t currentImage);
+    void createDescriptorPool();
+    void createDescriptorSets();
 
     void drawFrame();
 
@@ -153,6 +164,7 @@ private:
     VkExtent2D _swapChainExtent;
     std::vector<VkImageView> _swapChainImageViews;
     VkRenderPass _renderPass;
+    VkDescriptorSetLayout _descriptorSetLayout;
     VkPipelineLayout _pipelineLayout;
     VkPipeline _graphicsPipeline;
     std::vector<VkFramebuffer> _swapChainFramebuffers;
@@ -176,6 +188,11 @@ private:
     VkDeviceMemory _vertexBufferMemory;
     VkBuffer _indexBuffer;
     VkDeviceMemory _indexBufferMemory;
+    VkDescriptorPool _descriptorPool;
+    std::vector<VkDescriptorSet> _descriptorSets;
+
+    std::vector<VkBuffer> _uniformBuffers;
+    std::vector<VkDeviceMemory> _uniformBuffersMemory;
 
     const std::vector<Vertex> _vertices = {
         {{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
