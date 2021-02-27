@@ -1,6 +1,8 @@
 #include "VkApp.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 #include <set>
 #include <cstdint>
@@ -42,6 +44,7 @@ void VkApp::initVulkan(){
     createTextureImage();
     createTextureImageView();
     createTextureSampler();
+    loadModel();
     createVertexBuffer();
     createIndexBuffer();
     createUniformBuffers();
@@ -739,7 +742,7 @@ void VkApp::createCommandBuffers(){
         VkBuffer vertexBuffers[] = {_vertexBuffer};
         VkDeviceSize offsets[] = {0};
         vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, vertexBuffers, offsets);
-        vkCmdBindIndexBuffer(_commandBuffers[i], _indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+        vkCmdBindIndexBuffer(_commandBuffers[i], _indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
         vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSets[i], 0, nullptr);
         vkCmdDrawIndexed(_commandBuffers[i], static_cast<uint32_t>(_indices.size()), 1, 0, 0, 0);
@@ -1022,7 +1025,7 @@ void VkApp::updateUniformBuffer(uint32_t currentImage){
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
     UniformBufferObject ubo{};
     ubo.model = Matrix4f::Identity();
-    ubo.model.block<3,3>(0,0) = Eigen::AngleAxisf(time*1.0f, Vector3f::Unit(2)).matrix();
+    //ubo.model.block<3,3>(0,0) = Eigen::AngleAxisf(time*1.0f, Vector3f::Unit(2)).matrix();
     ubo.view = HF::lookAt(Vector3f(2.0, 2.0, 2.0), Vector3f::Zero(), Vector3f::Unit(2));
     ubo.proj = HF::perspective(3.14/4, _swapChainExtent.width / (float) _swapChainExtent.height, 0.1, 10);
     ubo.proj(1,1) *= -1;//y flip
@@ -1137,7 +1140,7 @@ void VkApp::createImage(uint32_t width, uint32_t height, VkFormat format,
 
 void VkApp::createTextureImage(){
     int texWidth, texHeight, texChannels;
-    stbi_uc* pixels = stbi_load("../../assets/texture.jpg", 
+    stbi_uc* pixels = stbi_load(TEXTURE_PATH.c_str(), 
     &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
     VkDeviceSize imageSize = texWidth * texHeight * 4;
 
@@ -1383,6 +1386,39 @@ VkFormat VkApp::findDepthFormat(){
 
 bool VkApp::hasStencilComponent(VkFormat format){
     return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
+}
+
+void VkApp::loadModel(){
+    tinyobj::attrib_t attrib;
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    std::string warn, err;
+
+    if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, MODEL_PATH.c_str())) {
+        throw std::runtime_error(warn + err);
+    }
+
+    for (const auto& shape : shapes) {
+        for (const auto& index : shape.mesh.indices) {
+            Vertex vertex{};
+
+            vertex.pos = {
+                attrib.vertices[3 * index.vertex_index + 0],
+                attrib.vertices[3 * index.vertex_index + 1],
+                attrib.vertices[3 * index.vertex_index + 2]
+            };
+
+            vertex.texCoord = {
+                attrib.texcoords[2 * index.texcoord_index + 0],
+                1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+            };
+
+            vertex.color = {1.0f, 1.0f, 1.0f};
+
+            _vertices.push_back(vertex);
+            _indices.push_back(_indices.size());
+        }
+    }
 }
 
 

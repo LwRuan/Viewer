@@ -147,6 +147,7 @@ private:
         VkImageTiling tiling, VkFormatFeatureFlags features);
     VkFormat findDepthFormat();
     bool hasStencilComponent(VkFormat format);
+    void loadModel();
 
 
     void drawFrame();
@@ -226,23 +227,11 @@ private:
     std::vector<VkBuffer> _uniformBuffers;
     std::vector<VkDeviceMemory> _uniformBuffersMemory;
 
-    const std::vector<Vertex> _vertices = {
-        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}},
+    std::vector<Vertex> _vertices;
+    std::vector<uint32_t> _indices;
 
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}
-    };
-
-    const std::vector<uint16_t> _indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4
-    };
-
+    const std::string MODEL_PATH = "../../assets/models/viking_room.obj";
+    const std::string TEXTURE_PATH = "../../assets/textures/viking_room.png";
 
 public:
     bool _framebufferResized = false;
