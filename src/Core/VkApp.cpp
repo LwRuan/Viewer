@@ -492,9 +492,9 @@ void VkApp::createGraphicsPipeline(){
 
     VkViewport viewport{};
     viewport.x = 0.0f;
-    viewport.y = 0.0f;
+    viewport.y = (float) _swapChainExtent.height;
     viewport.width = (float) _swapChainExtent.width;
-    viewport.height = (float) _swapChainExtent.height;
+    viewport.height = -(float) _swapChainExtent.height;
     viewport.minDepth = 0.0f;
     viewport.maxDepth = 1.0f;
 
@@ -1028,7 +1028,7 @@ void VkApp::updateUniformBuffer(uint32_t currentImage){
     //ubo.model.block<3,3>(0,0) = Eigen::AngleAxisf(time*1.0f, Vector3f::Unit(2)).matrix();
     ubo.view = HF::lookAt(Vector3f(2.0, 2.0, 2.0), Vector3f::Zero(), Vector3f::Unit(2));
     ubo.proj = HF::perspective(3.14/4, _swapChainExtent.width / (float) _swapChainExtent.height, 0.1, 10);
-    ubo.proj(1,1) *= -1;//y flip
+    //ubo.proj(1,1) *= -1;//y flip
 
     void* data;
     vkMapMemory(_device, _uniformBuffersMemory[currentImage], 0, sizeof(ubo), 0, &data);
