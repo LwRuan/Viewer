@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 
-set(BIN_NAME "VkViewer")
+set(BIN_NAME "vkrender")
 
-project(VkViewer)
+project(vkrender)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -13,12 +13,11 @@ find_package(Eigen3 CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(Vulkan REQUIRED)
 
-include_directories(${PROJECT_SOURCE_DIR}/src/Core)
-include_directories(${PROJECT_SOURCE_DIR}/src/ThirdParty)
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/Core)
+include_directories(src)
 
-add_executable(${BIN_NAME} src/main.cpp)
-target_link_libraries(${BIN_NAME} Core)
+file(GLOB src/*.h src/*.cpp)
+
+add_executable(${BIN_NAME} main.cpp)
 
 target_link_libraries(${BIN_NAME} Eigen3::Eigen)
 target_link_libraries(${BIN_NAME} glfw)
